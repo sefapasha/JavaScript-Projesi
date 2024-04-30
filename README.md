@@ -12,7 +12,8 @@ tanklar yok olduğunda ve sayfa sonuna gelince hızlanmaya başlıyor
 ## Oyundan Görüntüler
 >Site: https://www.youtube.com/watch?v=H13bOHtIK60
 >
->Görüntü-1: ![Uploading oynanis1.png…]()
+>Görüntü-1: ![oynanis1](https://github.com/sefapasha/JavaScript-Projesi/assets/113468818/3ba8932b-d4ba-40e2-911c-ea8eb576c54d)
+
 
 >
 >Görüntü-2: ![oynanis2](https://github.com/sefapasha/JavaScript-Projesi/assets/113468818/8c075f54-df30-4e09-aa9f-0b5600bfcc22)

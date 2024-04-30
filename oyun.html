@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TIGER-I</title>
+    <canvas id="oyunalan" width="600" height="400" style="border: 2px solid black;">
+        Bu Tarayıcı Desteklenmiyor!
+    </canvas>
+</head>
+
+<body>
+    <div><h1 style="color:Red;">&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;TANKI PATLAT!</h1></div>
+    <p>Tankı Patlat düşman tankları etkisiz hale getir ve KAZAN!<br>7 Levele Ulaş ve KAZAN!<br>4 tane Kaçırırsan elenirsin!</p>
+    <p>Nasıl oynanılır: </p>
+    <p><u>Klavyede Yön Tuşları(←,→)</u> İle Hareket Et.<br><u>Ekranda Yön Tuşları (←,→)</u>İle Hareket Et.<br><u>Space</u> tuşu ile Ateş Et.<br>Ekrana Basarak Ateş Et.</p>
+    <script>
+        var canvas=document.getElementById("oyunalan");
+        var ctx=canvas.getContext("2d");
+
+        //NESNELER
+
+        var Tank = new Image();
+        Tank.src = "images/Tank1.png";
+        var TankHeight = 50;
+        var TankWidth = 50;
+        var TankX = canvas.width/2-TankWidth;
+        var TankY = canvas.height-TankHeight;
+        var TankSpeed = 3;
+
+        var Enemy1 = new Image();
+        Enemy1.src = "images/Tank2.png";
+        var Enemy1Width = 50;
+        var Enemy1Height = 50;
+        var Enemy1X = -Enemy1Width;
+        var Enemy1Y = TankHeight;
+        var Enemy1Speed = 2;
+
+        var Enemy2 = new Image();
+        Enemy2.src = "images/Tank3.png";
+        var Enemy2Width = 50;
+        var Enemy2Height = 50;
+        var Enemy2X = -Enemy2Width;
+        var Enemy2Y = TankHeight * 2;
+        var Enemy2Speed = 1;
+
+        var Bullet = new Image();
+        Bullet.src = "images/Mermi.png"
+        var BulletWidth = 20;
+        var BulletHeight = 20;
+        var BulletX = TankX + BulletWidth / 2;
+        var BulletY= TankY + BulletHeight;
+        var BulletSpeed = 5;
+
+        var ArrowRight = new Image();
+        ArrowRight.src = "images/right.png";
+        var ArrowRightWidth = 60;
+        var ArrowRightHeight = 60;
+        var ArrowRightX = canvas.width - ArrowRightWidth;
+        var ArrowRightY = canvas.height - ArrowRightHeight;
+        
+        var ArrowLeft = new Image();
+        ArrowLeft.src = "images/left.png";
+        var ArrowLeftWidth = 60;
+        var ArrowLeftHeight = 60;
+        var ArrowLeftX = 0;
+        var ArrowLeftY = canvas.height - ArrowLeftHeight;
+
+        var RightPressed = false;
+        var LeftPressed = false;
+        var ShootFired = false;
+
+
+
+        //FONKSIYON
+
+        function drawScreen(){
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(Bullet, BulletX, BulletY, BulletWidth, BulletHeight);
+            ctx.drawImage(Tank, TankX, TankY, TankWidth, TankHeight);
+            ctx.drawImage(Enemy1, Enemy1X, Enemy1Y, Enemy1Width, Enemy1Height);
+            ctx.drawImage(ArrowRight, ArrowRightX, ArrowRightY, ArrowRightWidth, ArrowRightHeight);
+            ctx.drawImage(ArrowLeft, ArrowLeftX, ArrowLeftY, ArrowLeftWidth, ArrowLeftHeight);
+            if (level >= 2)
+              ctx.drawImage(Enemy2, Enemy2X, Enemy2Y, Enemy2Width, Enemy2Height);
+          
+            drawStats();
+        }
+
+        var level = 1;
+        var Hits = 0;
+        var Misses = 0;
+
+        function drawStats(){
+            ctx.beginPath();
+            ctx.fillStyle = "black";
+            ctx.fillText("Level:   " + level , canvas.width - 100, 20);
+            ctx.fillText("İsabetli:   " + Hits , canvas.width - 100, 40);
+            ctx.fillText("Kaçırılan:   " + Misses , canvas.width - 100, 60);
+        }
+
+        //Oyun Yönetimi
+
+        function gameLogic(){
+            if(Misses == 4){
+                alert("Oyun Bitti");
+            }
+            if(Hits == 3 && level == 1){
+                level++;
+                Hits = 0;
+            }
+            if(Hits == 3 && level == 2){
+                level++;
+                Hits = 0;
+            }
+            if(Hits == 3 && level == 3){
+                level++;
+                Hits = 0;
+            }
+            if(Hits == 3 && level == 4){
+                level++;
+                Hits = 0;
+            }
+            if(Hits == 3 && level == 5){
+                level++;
+                Hits = 0;
+            }
+            if(Hits == 3 && level == 6){
+                alert("KAZANDIN!!");
+            }
+
+            Enemy1X += Enemy1Speed;
+            Enemy2X += Enemy2Speed;
+            if(Enemy1X > canvas.width){
+                console.log("Düşman Tankı Sıfırlanamıyor");
+                resetEnemy1();
+            }
+            if(Enemy2X > canvas.width){
+                console.log("Düşman Tankı Sıfırlanamıyor");
+                resetEnemy2();
+            }
+            if(LeftPressed){
+                if(TankX > 0){
+                    TankX -= TankSpeed;
+                    BulletX -= TankSpeed;
+                }
+            }
+            if(RightPressed){
+                if(TankX < canvas.width - TankWidth){
+                    TankX += TankSpeed;
+                    BulletX += TankSpeed;
+                }
+            }
+            if(ShootFired){
+                BulletY -= BulletSpeed;
+                if(BulletY < 0 - BulletHeight){
+                    resetBullet();
+                    Misses++;
+                }
+            }
+
+            
+    if (CheckCollisionEnemy1(
+    BulletX,
+    BulletY,
+    Enemy1X,
+    Enemy1Y,
+    Enemy1Width, 
+    Enemy1Height
+    ) ||
+    CheckCollisionEnemy2(
+    BulletX, 
+    BulletY, 
+    Enemy2X, 
+    Enemy2Y, 
+    Enemy2Width, 
+    Enemy2Height
+    )
+    ){
+    
+    Hits++;
+    resetBullet();
+    if (CheckCollisionEnemy1) {
+       resetEnemy1();
+    }
+    if (CheckCollisionEnemy2){
+       resetEnemy2();
+    }
+    }
+     }
+            
+
+        function resetBullet(){
+            BulletX = TankX + BulletWidth / 2;
+            BulletY = TankY + BulletHeight;
+            
+            ShootFired = false;
+        }
+
+        function resetEnemy1(){
+            Enemy1X = -Enemy2Width;
+            Enemy1Speed += 0.2; 
+        }
+
+        function resetEnemy2(){
+            Enemy2X = -Enemy2Width;
+            Enemy2Speed += 0.2; 
+        }
+
+        
+    function CheckCollisionEnemy1(
+    BulletX, 
+    BulletY,
+    Enemy1X,
+    Enemy1Y, 
+    Enemy1Width,
+    Enemy1Height
+    ) {
+    
+    var hitX = BulletX >= Enemy1X && BulletX <= Enemy1X + Enemy1Width;
+    var hitY = BulletY >= Enemy1Y && BulletY <= Enemy1Y + Enemy1Height; 
+    return hitX && hitY;
+    }
+
+    function CheckCollisionEnemy2(
+    BulletX, 
+    BulletY,
+    Enemy2X,
+    Enemy2Y, 
+    Enemy2Width,
+    Enemy2Height
+    ) {
+    
+    var hitX = BulletX >= Enemy2X && BulletX <= Enemy2X + Enemy2Width;
+    var hitY = BulletY >= Enemy2Y && BulletY <= Enemy2Y + Enemy2Height; 
+    return hitX && hitY;
+    }
+
+
+        //OYUNU BAŞLATALIM!
+
+        function Start(){
+            var raf = window.requestAnimationFrame;
+            var delay = 10;
+            function animate(){
+                setTimeout(function (){
+                    raf(animate);
+                    drawScreen();
+                    gameLogic()
+                },delay)
+            }
+            animate();
+        }
+        
+        
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+    function handleKeyDown(e) {
+    var code = e.keyCode;
+    if (code == 39) {
+    RightPressed = true;
+    }
+    if (code == 37){
+    LeftPressed = true;
+    }
+    if (code == 32)
+    // Boşluk TUŞU ile ateş 
+    ShootFired = true; 
+    shoot.play();
+    }
+
+    function handleKeyUp(e) { 
+      var code = e.keyCode;
+      if (code == 39) {
+        RightPressed = false;
+    } else if (code == 37) {
+        LeftPressed = false;
+    }
+    }
+
+        
+function isInside(x, y, arrowX, arrowY, arrowWidth, arrowHeight) { 
+    return (
+    x > arrowX &&
+    x < arrowX + arrowWidth &&
+    y > arrowY &&
+    y < arrowY + arrowHeight
+);
+}
+
+function handleInput(event) {
+    var x, y;
+    // Dokunma etkinlikleri
+    if (event.touches) {
+        x = event.touches[0].clientX;
+        y = event.touches[0].clientY;
+    } else {
+        x = event.clientX;
+        y = event.clientY;
+    }
+
+    // Konumu ayarlamak için canvas dikdörtgeni
+    var rect = canvas.getBoundingClientRect();
+    x = x - rect.left;
+    y = y - rect.top;
+
+    // Sol ve sağ okların içinde mi kontrol edelim ve değişkenleri ayarlayalım
+    if (isInside(x, y, ArrowLeftX, ArrowLeftY, ArrowLeftWidth, ArrowLeftHeight)) {
+        LeftPressed = true;
+        RightPressed = false;
+    } else if (isInside(x, y, ArrowRightX, ArrowRightY, ArrowRightWidth, ArrowRightHeight)) {
+        RightPressed = true;
+        LeftPressed = false;
+    } else {
+         // Bu durumda ateş edildi
+        ShootFired = true;
+        shoot.play();
+    }
+
+    console.log("Girdi bu noktada tespit edildi: ", x, y);
+    event.preventDefault();
+}
+
+function stopInput(event) {
+    RightPressed = false;
+    LeftPressed = false;
+    event.preventDefault();
+}
+
+// Dokunma ve Fare olayları
+canvas.addEventListener("touchstart", handleInput);
+canvas.addEventListener("mousedown", handleInput);
+
+canvas.addEventListener("touchend", stopInput);
+canvas.addEventListener("mouseup", stopInput);
+
+      Start();
+    </script>
+   </body>
+</html>

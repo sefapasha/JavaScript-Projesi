@@ -11,6 +11,8 @@ tanklar yok olduğunda ve sayfa sonuna gelince hızlanmaya başlıyor
 7.levele ulaşınca oyun bitiyor.
 ## Oyundan Görüntüler
 Site: https://www.youtube.com/watch?v=H13bOHtIK60
+Görüntü-1: https://prnt.sc/f2GJj7yYy0iE
+Görüntü-2: https://prnt.sc/nkCB3H0exIrD
 ## Geliştiren
 Ahmet Sefa Unal
 

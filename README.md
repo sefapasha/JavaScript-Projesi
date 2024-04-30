@@ -9,6 +9,8 @@ level 1 den başlayıp level 7ye kadar süren bir tank oyunu.
 tanklar yok olduğunda ve sayfa sonuna gelince hızlanmaya başlıyor
 2.levelden sonra 1 tane daha tank ekleniyor ve işiniz biraz daha kolaylaşıyor.
 7.levele ulaşınca oyun bitiyor.
+## Oyundan Görüntüler
+Site: https://www.youtube.com/watch?v=H13bOHtIK60
 ## Geliştiren
 Ahmet Sefa Unal
 

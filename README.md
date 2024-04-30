@@ -1,4 +1,4 @@
-# JavaScript-Projesi
+# JavaScript Projesi
 Temel Javascript bilgisi ile bir oyun yaptım.
 Bu oyunda 2 düşman tankını yok ederek 7.levele ulaşıp oyunu kazanmayı amaçlıyoruz.
 Tankları 4 defa ıskalarsak eleniyoruz.
